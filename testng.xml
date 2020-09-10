@@ -1,0 +1,11 @@
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<suites>
+    <suite name="Test" verbose="1">
+        <test name="Data">
+            <classes>
+                <class name="logic.DataTest"/>
+            </classes>
+        </test>
+    </suite>
+</suites>
