@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventDAO {
-    private final static String GET_DRIVER_EVENTS_BY_ID = "SELECT * FROM eld.eld_event WHERE event_timestamp>'2020-06-01 00:00:00'and eld_sequence is not null and driver_id_1=";
+    private final static String GET_DRIVER_EVENTS_BY_ID = "SELECT * FROM eld.eld_event WHERE record_status=1 and event_timestamp>'2020-08-01 00:00:00'and eld_sequence is not null and driver_id_1=";
 
     public static List<Event> getEvents(String driverId) throws SQLException {
         List<Event> eventsList = new ArrayList<>();
         Statement st = null;
         try {
             st = DBConnection.getConnection().createStatement();
-            ResultSet resultSet = st.executeQuery(GET_DRIVER_EVENTS_BY_ID+driverId);
+            ResultSet resultSet = st.executeQuery(GET_DRIVER_EVENTS_BY_ID + driverId);
             while (resultSet.next()) {
                 Event event = new Event
                         .Builder()

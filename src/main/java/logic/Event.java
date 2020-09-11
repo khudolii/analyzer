@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Event {
     private EventType eventName;
@@ -232,8 +233,7 @@ public class Event {
 
         public Builder setEventTimestamp(String eventTimestamp) {
             try {
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                event.eventTimestamp = dateFormat.parse(eventTimestamp);
+                event.eventTimestamp =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(eventTimestamp);
             } catch (ParseException e) {
                 System.out.println(e);
             }
@@ -338,4 +338,5 @@ public class Event {
                 ", LAT='" + latitude + '\'' +
                 ", LONG='" + longitude + '\'';
     }
+
 }
