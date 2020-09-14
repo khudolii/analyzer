@@ -7,14 +7,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventDAO {
-    private final static String GET_DRIVER_EVENTS_BY_ID = "SELECT * FROM eld.eld_event WHERE record_status=1 and event_timestamp>'2020-08-01 00:00:00'and eld_sequence is not null and driver_id_1=";
+    private final static String GET_DRIVER_EVENTS_BY_ID = "SELECT * FROM eld.eld_event WHERE record_status=1 and eld_sequence is not null and event_timestamp between ";
+    public static String driverId;
+    public static String dateFrom;
+    public static String dateTo;
 
-    public static List<Event> getEvents(String driverId) throws SQLException {
+    public static String getDriverId() {
+        return driverId;
+    }
+
+    public static void setDriverId(String driverId) {
+        EventDAO.driverId = driverId;
+    }
+
+    public static String getDateFrom() {
+        return dateFrom;
+    }
+
+    public static void setDateFrom(String dateFrom) {
+        EventDAO.dateFrom = dateFrom;
+    }
+
+    public static String getDateTo() {
+        return dateTo;
+    }
+
+    public static void setDateTo(String dateTo) {
+        EventDAO.dateTo = dateTo;
+    }
+
+    public static List<Event> getEvents() throws SQLException {
         List<Event> eventsList = new ArrayList<>();
         Statement st = null;
         try {
             st = DBConnection.getConnection().createStatement();
-            ResultSet resultSet = st.executeQuery(GET_DRIVER_EVENTS_BY_ID + driverId);
+            ResultSet resultSet = st.executeQuery(GET_DRIVER_EVENTS_BY_ID  + "'" + dateFrom + " 00:00:00' and '" + dateTo +" 00:00:00' and  driver_id_1=" + driverId);
             while (resultSet.next()) {
                 Event event = new Event
                         .Builder()

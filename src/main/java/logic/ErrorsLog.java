@@ -1,7 +1,6 @@
 package logic;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +17,11 @@ public class ErrorsLog {
             Font.BOLD);
     private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 14,
             Font.BOLD);
+    public static ByteArrayOutputStream bout;
+
+    public static ByteArrayOutputStream getBout() {
+        return bout;
+    }
 
     public static ArrayList<String> errorsLog = new ArrayList<String>();
 
@@ -25,26 +29,30 @@ public class ErrorsLog {
         return errorsLog;
     }
 
-    private static Document document = null;
+    public static Document document = null;
     private static Anchor anchor;
     private static Chapter catPart;
 
+    public static Document getDocument() {
+        return document;
+    }
 
     public static void createReportFile(String driverId, int numOfEvents) {
         try {
             anchor = new Anchor("Found errors", catFont);
             catPart = new Chapter(new Paragraph(anchor), 1);
             document = new Document();
-            String currentTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-            PdfWriter.getInstance(document, new FileOutputStream("Reports/Analyze_driver_" + driverId + "_" + currentTime + ".pdf"));
+            //PdfWriter.getInstance(document, new FileOutputStream("/usr/local/tomcat/webapps/analyzer/Reports/Analyze_driver_" + driverId + "_" + currentTime + ".pdf"));
+            bout = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, bout);
             Paragraph article = new Paragraph();
             document.open();
             article.add(new Paragraph("DATA CHECK REPORT", catFont));
             article.add(new Paragraph("Driver ID: " + driverId, smallBold));
-            article.add(new Paragraph("Date: " + currentTime, smallBold));
+            article.add(new Paragraph("Date: " + new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()), smallBold));
             article.add(new Paragraph("Checked events: " + numOfEvents, smallBold));
             document.add(article);
-        } catch (DocumentException | FileNotFoundException e) {
+        } catch (DocumentException e) {
             e.printStackTrace();
         }
     }

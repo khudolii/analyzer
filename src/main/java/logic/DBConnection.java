@@ -26,6 +26,7 @@ public class DBConnection {
     }
 
     public static void closeConnection()  {
+        System.out.println("Close connection.....");
         if(con!=null) {
             try {
                 con.close();
