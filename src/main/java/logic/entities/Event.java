@@ -1,19 +1,20 @@
-package logic;
+package logic.entities;
 
-import java.text.DateFormat;
+import logic.EventType;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class Event {
     private EventType eventName;
     private long eventSequence;
-    private long eldSequence;
+    private String eldSequence;
     private long driverId1;
     private long driverId2;
     private long truckId;
     private String truckVin;
+    private String truckNumber;
     private Date eventTimestamp;
     private String timeZoneOffset;
     private String trailerNumber;
@@ -44,7 +45,7 @@ public class Event {
         return eventSequence;
     }
 
-    public long getEldSequence() {
+    public String getEldSequence() {
         return eldSequence;
     }
 
@@ -58,6 +59,10 @@ public class Event {
 
     public long getTruckId() {
         return truckId;
+    }
+
+    public String getTruckNumber() {
+        return truckNumber;
     }
 
     public String getTruckVin() {
@@ -206,7 +211,7 @@ public class Event {
             return this;
         }
 
-        public Builder setEldSequence(long eldSequence) {
+        public Builder setEldSequence(String eldSequence) {
             event.eldSequence = eldSequence;
             return this;
         }

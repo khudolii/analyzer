@@ -1,6 +1,7 @@
 package logic;
 
 
+import logic.entities.Event;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -26,9 +27,13 @@ public class Analyzer {
         return Math.ceil(value * scale) / scale;
     }
 
+    private double calculateTimeDifferenceBetweenEvents(Event firstEvent, Event secondEvent) {
+        return roundNumValue((double) Math.abs(firstEvent.getEventTimestamp().getTime() - secondEvent.getEventTimestamp().getTime()) / 3600000);
+    }
+
     /*The difference TVM and EventTimestamp between the previous and the current event is calculated,
      the speed is calculated, if it is higher than 100 miles per hour, then an error is recorded.*/
-    private void checkTotalVehicleMiles(Event event) {
+    private void checkVehicleMiles(Event event) {
         double diffTotalVehicleMiles = roundNumValue(Math.abs((previousEvent.getTotalVehicleMiles() - event.getTotalVehicleMiles())));
         double speed = 0;
         if (timeDifferenceBetweenEvents != 0.0)
@@ -48,9 +53,25 @@ public class Analyzer {
         }
         if (powerUp != null) {
             if (powerUp.getEventName() == EventType.POWER_UP
-                    && (roundNumValue(event.getAccumulatedVehicleMiles() - previousEvent.getAccumulatedVehicleMiles()) - timeDifferenceBetweenEvents) > 0.1)
+                    && (roundNumValue(Math.abs(event.getAccumulatedVehicleMiles() - previousEvent.getAccumulatedVehicleMiles())) != diffTotalVehicleMiles ))
                 eventErrors.add("AVM error. AVM curr.event - AVM prev.event = " + event.getAccumulatedVehicleMiles() + " - " + previousEvent.getAccumulatedVehicleMiles() +
-                        " = " + (roundNumValue(event.getAccumulatedVehicleMiles() - previousEvent.getAccumulatedVehicleMiles())) + " h, but Expected = " + timeDifferenceBetweenEvents + " h");
+                        " = " + (roundNumValue(Math.abs(event.getAccumulatedVehicleMiles() - previousEvent.getAccumulatedVehicleMiles()))) + " m, but Expected = " + diffTotalVehicleMiles + " m");
+        }
+    }
+
+    private void checkEngineHours(Event event) {
+        if (roundNumValue(event.getTotalEngineHours() - previousEvent.getTotalEngineHours()) - timeDifferenceBetweenEvents >= 0.1)
+            eventErrors.add("TEH error. TEH curr.event - TEH prev.event = " + event.getTotalEngineHours() + " - " + previousEvent.getTotalEngineHours() +
+                    " = " + (roundNumValue(event.getTotalEngineHours() - previousEvent.getTotalEngineHours())) + " h, but Expected = " + timeDifferenceBetweenEvents + " h");
+        if (previousEvent.getEventName() == EventType.POWER_UP) {
+            if (previousEvent.getElapsedEngineHours() != 0)
+                eventErrors.add("EEH on Power Up must be 0!");
+        }
+        if (powerUp != null) {
+            if (powerUp.getEventName() == EventType.POWER_UP
+                    && (roundNumValue(event.getElapsedEngineHours() - previousEvent.getElapsedEngineHours()) - timeDifferenceBetweenEvents) >= 0.1)
+                eventErrors.add("EEH error. EEH curr.event - EEH prev.event = " + event.getTotalEngineHours() + " - " + previousEvent.getTotalEngineHours() +
+                        " = " + (roundNumValue(event.getElapsedEngineHours() - previousEvent.getElapsedEngineHours())) + " h, but Expected = " + timeDifferenceBetweenEvents + " h");
         }
     }
 
@@ -77,21 +98,7 @@ public class Analyzer {
                         "\n First " + dataDiagnostic.getEventName() + " event started at " + dataDiagnostic.getEventTimestamp());
     }
 
-    private void checkTotalEngineHours(Event event) {
-        if (roundNumValue(event.getTotalEngineHours() - previousEvent.getTotalEngineHours()) - timeDifferenceBetweenEvents > 0.1)
-            eventErrors.add("TEH error. TEH curr.event - TEH prev.event = " + event.getTotalEngineHours() + " - " + previousEvent.getTotalEngineHours() +
-                    " = " + (roundNumValue(event.getTotalEngineHours() - previousEvent.getTotalEngineHours())) + " h, but Expected = " + timeDifferenceBetweenEvents + " h");
-        if (previousEvent.getEventName() == EventType.POWER_UP) {
-            if (previousEvent.getElapsedEngineHours() != 0)
-                eventErrors.add("EEH on Power Up must be 0!");
-        }
-        if (powerUp != null) {
-            if (powerUp.getEventName() == EventType.POWER_UP
-                    && (roundNumValue(event.getElapsedEngineHours() - previousEvent.getElapsedEngineHours()) - timeDifferenceBetweenEvents) > 0.1)
-                eventErrors.add("EEH error. EEH curr.event - EEH prev.event = " + event.getTotalEngineHours() + " - " + previousEvent.getTotalEngineHours() +
-                        " = " + (roundNumValue(event.getTotalEngineHours() - previousEvent.getTotalEngineHours())) + " h, but Expected = " + timeDifferenceBetweenEvents + " h");
-        }
-    }
+
 
     private void checkRecordOriginForEvent(Event event) {
         switch (event.getEventName()) {
@@ -202,16 +209,12 @@ public class Analyzer {
             eventErrors.add(event.getEventName() + " after " + eventsList.get(index).getEventName());
     }
 
-    private double calculateTimeDifferenceBetweenEvents(Event firstEvent, Event secondEvent) {
-        return roundNumValue((double) Math.abs(firstEvent.getEventTimestamp().getTime() - secondEvent.getEventTimestamp().getTime()) / 3600000);
-    }
 
     private void checkAfterLogoutAllEventsAreManual(Event event) {
-        if (login != null && event.getEventName() != EventType.LOGOUT)
-            if (login.getEventName() == EventType.LOGOUT) {
-                if (event.getRecordOrigin() != 2 || event.getEventType() == 2 || event.getEventType() >= 5)
-                    eventErrors.add("There can only be manual events after the Logout ( ES = " + login.getEventSequence() + "; TIME= " + login.getEventTimestamp() + ")  event. ");
-            }
+        if (login != null && event.getEventName() != EventType.LOGOUT && login.getEventName() == EventType.LOGOUT) {
+            if (event.getRecordOrigin() != 2 || event.getEventType() == 2 || event.getEventType() >= 5)
+                eventErrors.add("There can only be manual events after the Logout ( ES = " + login.getEventSequence() + "; TIME= " + login.getEventTimestamp() + ")  event. ");
+        }
     }
 
     private void checkClearedHaveDataOfNextEvent(Event event) {
@@ -219,8 +222,9 @@ public class Analyzer {
             if (event.getTotalVehicleMiles() != previousEvent.getTotalVehicleMiles()
                     || event.getAccumulatedVehicleMiles() != previousEvent.getAccumulatedVehicleMiles()
                     || event.getTotalEngineHours() != previousEvent.getTotalEngineHours()
-                    || event.getElapsedEngineHours() != previousEvent.getElapsedEngineHours())
+                    || event.getElapsedEngineHours() != previousEvent.getElapsedEngineHours()) {
                 eventErrors.add("PC / Cleared event must have next event data");
+            }
         }
     }
 
@@ -228,7 +232,6 @@ public class Analyzer {
         for (Event event : eventsList) {
             if (previousEvent != null) {
                 event.setEventName();
-                System.out.println(event.toString());
                 checkRecordOriginForEvent(event);
                 checkClearedHaveDataOfNextEvent(event);
                 timeDifferenceBetweenEvents = calculateTimeDifferenceBetweenEvents(previousEvent, event);
@@ -244,21 +247,21 @@ public class Analyzer {
                     case DRIVING:
                     case ON_DUTY: {
                         if (!isManualEventWithoutData(event)) {
-                            checkTotalVehicleMiles(event);
-                            checkTotalEngineHours(event);
+                            checkVehicleMiles(event);
+                            checkEngineHours(event);
                         }
                     }
                     break;
                     case PERSONAL_USE: {
                         checkPreviousEventType(event, EventType.OFF_DUTY);
-                        checkTotalVehicleMiles(event);
-                        checkTotalEngineHours(event);
+                        checkVehicleMiles(event);
+                        checkEngineHours(event);
                     }
                     break;
                     case YARD_MOVE: {
                         checkPreviousEventType(event, EventType.ON_DUTY);
-                        checkTotalVehicleMiles(event);
-                        checkTotalEngineHours(event);
+                        checkVehicleMiles(event);
+                        checkEngineHours(event);
                     }
                     break;
                     case PC_CLEARED: {
@@ -291,8 +294,8 @@ public class Analyzer {
                     break;
                     case INTERMEDIATE_EVENT: {
                         checkIntermediateEvent(event);
-                        checkTotalVehicleMiles(event);
-                        checkTotalEngineHours(event);
+                        checkVehicleMiles(event);
+                        checkEngineHours(event);
                     }
                 }
                 checkAfterLogoutAllEventsAreManual(event);

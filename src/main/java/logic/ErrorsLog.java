@@ -7,6 +7,7 @@ import java.util.Date;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import logic.entities.Event;
 
 public class ErrorsLog {
     private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,

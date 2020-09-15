@@ -1,4 +1,4 @@
-package logic;
+package logic.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

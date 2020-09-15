@@ -1,6 +1,7 @@
 package logic;
 
-import com.itextpdf.text.Document;
+import logic.dao.EventDAO;
+import logic.entities.Event;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;

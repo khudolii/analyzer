@@ -1,4 +1,6 @@
-package logic;
+package logic.dao;
+
+import logic.entities.Event;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,7 +48,7 @@ public class EventDAO {
                 Event event = new Event
                         .Builder()
                         .setEventSequence(resultSet.getLong("event_sequence"))
-                        .setEldSequence(resultSet.getLong("eld_sequence"))
+                        .setEldSequence(resultSet.getString("eld_sequence"))
                         .setDriverId1(resultSet.getLong("driver_id_1"))
                         .setDriverId2(resultSet.getLong("driver_id_2"))
                         .setTruckId(resultSet.getLong("truck_id"))
