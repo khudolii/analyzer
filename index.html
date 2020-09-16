@@ -2,15 +2,24 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>User Form</title>
+    <title>Check event data</title>
 </head>
 <body>
-<form action="getReport" method="POST">
-    Driver ID: <input name="driverId" />
+<form action="getReport" method="GET">
+    Driver ID: <input name="driverId" pattern="[0-9]{2,7}"/>
     <br><br>
-    Date From: <input name="dateFrom" />
+    Date From: <input name="dateFrom" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}"/>
+    <br><br>
+    Date To: <input name="dateTo" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}"/>
     <br><br>
     <input type="submit" value="Submit" />
+    <br><br>
+</form>
+<br><br>
+<form action="getCsvReport" method="POST" enctype="multipart/form-data">
+    Driver ID: <input name="driverId" pattern="[0-9]{2,7}"><br>
+    <input name="data" type="file"><br>
+    <input type="submit"><br>
 </form>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package logic.csv.csvFileBlocks;
 
+import logic.ErrorsLog;
 import logic.entities.Event;
 
 import java.util.List;
@@ -45,7 +46,10 @@ public class CmvEnginePowerUpAndShutDownEvents  extends EventCSV {
             checkStringValue(foundEvent.get().getTruckVin(),getVinNumber(), "getVinNumber",foundEvent.get().getEldSequence());
             checkShippingTrailerNumbersValue(foundEvent.get().getTrailerNumber(),getTrailerNumber(), "getTrailerNumber",foundEvent.get().getEldSequence());
             checkShippingTrailerNumbersValue(foundEvent.get().getShippingNumber(),getShippingNumber(), "getShippingNumber",foundEvent.get().getEldSequence());
-            checkStringValue(foundEvent.get().getTruckNumber(),getPowerUnitNumber(), "getPowerUnitNumber",foundEvent.get().getEldSequence());
+            //checkStringValue(foundEvent.get().getTruckNumber(),getPowerUnitNumber(), "getPowerUnitNumber",foundEvent.get().getEldSequence());
+            if(errorLogs.size()>0)
+                ErrorsLog.writeErrorsFromCsvFile(errorLogs);
+            errorLogs.clear();
         } catch (NoSuchElementException e){
             log.error("* * * * No Such Event!");
             //ErrorLogs.setNoSuchElementLogs("No Such Event! " + "CSV -> " + this.toString() + "DB -> " + foundEvent.toString());

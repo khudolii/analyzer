@@ -1,5 +1,6 @@
 package logic.csv.csvFileBlocks;
 
+import logic.ErrorsLog;
 import logic.entities.Event;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class EldEvents extends EventCSV {
             checkCoordinatesValue(foundEvent.get().getLongitude(), getLongitude(), "getLongitude",foundEvent.get().getEldSequence());
             checkCoordinatesValue(foundEvent.get().getLatitude(), getLatitude(), "getLatitude",foundEvent.get().getEldSequence());
             checkStringValue(buildEventTimestampByMilis(foundEvent.get().getEventTimestamp().getTime()) , csvTimeFormatToTimestamp(getEventDate(), getEventTime()), "getEventTimeStamp",foundEvent.get().getEldSequence());
+            if(errorLogs.size()>0)
+                ErrorsLog.writeErrorsFromCsvFile(errorLogs);
+            errorLogs.clear();
             //checkDoubleValue(foundEvent.get().getDistanceSinceLastValidCoords(), getDistanceLastValidCoordinates(), "getDistanceLastValidCoordinates",foundEvent.get().getEldSequence());
             //checkIntValue(foundEvent.get().getMalfunctionIndicatorStatus(), getMalfunctionIndicatorStatus(), "getMalfunctionIndicatorStatus",foundEvent.get().getEldSequence());
             //checkIntValue(foundEvent.get().getDataDiagnosticEventIdicatorStatus(), getDataDiagnosticEventIndicatorStatus(), "getDataDiagnosticEventIndicatorStatus",foundEvent.get().getEldSequence());

@@ -1,5 +1,6 @@
 package logic.csv.csvFileBlocks;
 
+import logic.ErrorsLog;
 import logic.entities.Event;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class EldLoginAndLogoutEvents extends EventCSV {
             checkStringValue(buildEventTimestampByMilis(foundEvent.get().getEventTimestamp().getTime()) , csvTimeFormatToTimestamp(getEventDate(), getEventTime()), "getEventTimeStamp",foundEvent.get().getEldSequence());
             checkDoubleValue(foundEvent.get().getTotalVehicleMiles(),getTotalVehicleMiles(),"getTotalVehicleMiles",foundEvent.get().getEldSequence());
             checkDoubleValue(foundEvent.get().getTotalEngineHours(), getTotalEngineHours() , "getTotalEngineHours",foundEvent.get().getEldSequence());
+            if(errorLogs.size()>0)
+                ErrorsLog.writeErrorsFromCsvFile(errorLogs);
+            errorLogs.clear();
         } catch (NoSuchElementException e){
             log.error("* * * * No Such Event!");
             //ErrorLogs.setNoSuchElementLogs("No Such Event! " + "CSV -> " + this.toString() + "DB -> " + foundEvent.toString() + "\n");

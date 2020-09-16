@@ -1,5 +1,6 @@
 package logic.csv.csvFileBlocks;
 
+import logic.ErrorsLog;
 import logic.entities.Event;
 
 import java.util.List;
@@ -28,6 +29,9 @@ public class EldEventAnnotationOrComments extends EventCSV {
             checkStringValue(driverLoginNameFromDetailsPage,getEldUserName(), "getEldUserName",foundEvent.get().getEldSequence());
             checkStringValue(foundEvent.get().getComment(),getCommentTextOrAnnotation(), "getCommentTextOrAnnotation",foundEvent.get().getEldSequence());
             checkStringValue(buildEventTimestampByMilis(foundEvent.get().getEventTimestamp().getTime()) , csvTimeFormatToTimestamp(getEventDate(), getEventTime()), "getEventTimeStamp",foundEvent.get().getEldSequence());
+            if(errorLogs.size()>0)
+                ErrorsLog.writeErrorsFromCsvFile(errorLogs);
+            errorLogs.clear();
         } catch (
                 NoSuchElementException e){
             log.error("* * * * No Such Event!");

@@ -15,8 +15,7 @@ import static org.testng.Assert.assertNotEquals;
 
 public abstract class EventCSV {
     protected static final Logger log = Logger.getLogger(EventCSV.class);
-
-    public static final double DELTA = 1;
+    protected static ArrayList errorLogs = new ArrayList<String>();
 
     protected String eventSequence;
     protected int recordOrigin;
@@ -345,6 +344,7 @@ public abstract class EventCSV {
         if (eventFromDb == eventFromCsv)
             return true;
         else
+            errorLogs.add("ELD Sequence= " +eventSequence + "-> " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
             //ErrorLogs.setErrorLogs("ELD Sequence= " +eventSequence + "-> " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv + "\n" );
             return false;
     }
@@ -353,13 +353,15 @@ public abstract class EventCSV {
         log.info("* * * * " + "ELD Sequence= " + eventSequence + "-> " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
         if ((nameOfField.equals("getElapsedEngineHours") && eventFromCsv > 99.9)
                 || nameOfField.equals("getAccumulatedVehicleMiles") && eventFromCsv > 9999) {
+            errorLogs.add("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
             //ErrorLogs.setErrorLogs("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv  + "\n" );
             return false;
         }
         if (Math.abs(eventFromDb - eventFromCsv) <= 1)
             return true;
         else
-            //ErrorLogs.setErrorLogs("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv  + "\n" );
+            errorLogs.add("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
+        //ErrorLogs.setErrorLogs("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv  + "\n" );
             return false;
     }
 
@@ -373,6 +375,7 @@ public abstract class EventCSV {
             if (eventFromCsv == null && eventFromDb == null || eventFromCsv.equals("") || eventFromDb.equals(""))
                 return true;
         }
+        errorLogs.add("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
         //ErrorLogs.setErrorLogs("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv  + "\n" );
         return false;
     }
@@ -384,7 +387,8 @@ public abstract class EventCSV {
                     || eventFromDb.equals("[{\"number\":\"\",\"from\":\"\",\"to\":\"\"}]")
                     || eventFromDb.equals("[{\"number\":null,\"from\":null,\"to\":null}]"))
                 return true;
-            //else
+            else
+                errorLogs.add("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
             //ErrorLogs.setErrorLogs("ELD Sequence= " + eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv + "\n");
         } else {
             JSONArray jsonObject = new JSONArray(eventFromDb);
@@ -394,9 +398,11 @@ public abstract class EventCSV {
                     try {
                         String numberValue = jsonObject.getJSONObject(i).getString("number");
                         if (!eventFromCsv.contains(numberValue)) {
+                            errorLogs.add("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
                             //ErrorLogs.setErrorLogs("ELD Sequence= " + eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv + "\n");
                         }
                     } catch (JSONException | NullPointerException exception) {
+                        errorLogs.add("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
                         //ErrorLogs.setErrorLogs("ELD Sequence= " + eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv + "\n");
                     }
                 }
@@ -437,6 +443,7 @@ public abstract class EventCSV {
                 return true;
             }
         }
+        errorLogs.add("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv);
         //ErrorLogs.setErrorLogs("ELD Sequence= " +eventSequence + " " + nameOfField + ": DB= " + eventFromDb + " ; CSV= " + eventFromCsv  + "\n" );
         return false;
     }

@@ -43,7 +43,7 @@ public class EventDAO {
         Statement st = null;
         try {
             st = DBConnection.getConnection().createStatement();
-            ResultSet resultSet = st.executeQuery(GET_DRIVER_EVENTS_BY_ID  + "'" + dateFrom + " 00:00:00' and '" + dateTo +" 00:00:00' and  driver_id_1=" + driverId);
+            ResultSet resultSet = st.executeQuery(GET_DRIVER_EVENTS_BY_ID  + "'" + "2020-06-24" + " 00:00:00' and '" + "2020-07-05" +" 00:00:00' and  driver_id_1=" + "34132");
             while (resultSet.next()) {
                 Event event = new Event
                         .Builder()

@@ -29,6 +29,114 @@ public class EldFileHeaderSegment {
     private String eldAuthenticated;
     private String outputFileComment;
 
+    public String getDriverFirstName() {
+        return driverFirstName;
+    }
+
+    public String getDriverLastName() {
+        return driverLastName;
+    }
+
+    public String getDriverEldUserName() {
+        return driverEldUserName;
+    }
+
+    public String getDriverLicenseIssuingState() {
+        return driverLicenseIssuingState;
+    }
+
+    public String getDriverLicenseNumber() {
+        return driverLicenseNumber;
+    }
+
+    public String getCoDriverFirstName() {
+        return coDriverFirstName;
+    }
+
+    public String getCoDriverLastName() {
+        return coDriverLastName;
+    }
+
+    public String getCoDriverEldUserName() {
+        return coDriverEldUserName;
+    }
+
+    public String getCmvPowerUnitNumber() {
+        return cmvPowerUnitNumber;
+    }
+
+    public String getCmvVinNumber() {
+        return cmvVinNumber;
+    }
+
+    public String getTrailerNumber() {
+        return trailerNumber;
+    }
+
+    public String getCarriersUSDOTNumber() {
+        return carriersUSDOTNumber;
+    }
+
+    public String getCarrierName() {
+        return carrierName;
+    }
+
+    public String getMultiDayBasisUsed() {
+        return multiDayBasisUsed;
+    }
+
+    public String getTimeZoneOffsetFromUtc() {
+        return timeZoneOffsetFromUtc;
+    }
+
+    public String getShippingDocumentNumber() {
+        return shippingDocumentNumber;
+    }
+
+    public String getExemptDriverConfiguration() {
+        return exemptDriverConfiguration;
+    }
+
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public String getCurrentTime() {
+        return currentTime;
+    }
+
+    public String getCurrentLatitude() {
+        return currentLatitude;
+    }
+
+    public String getCurrentLongitude() {
+        return currentLongitude;
+    }
+
+    public double getCurrentTotalVehicleMiles() {
+        return currentTotalVehicleMiles;
+    }
+
+    public double getCurrentTotalEngineHours() {
+        return currentTotalEngineHours;
+    }
+
+    public String getEldRegistrationId() {
+        return eldRegistrationId;
+    }
+
+    public String getEldIdentifier() {
+        return eldIdentifier;
+    }
+
+    public String getEldAuthenticated() {
+        return eldAuthenticated;
+    }
+
+    public String getOutputFileComment() {
+        return outputFileComment;
+    }
+
     @Override
     public String toString() {
         return "EldFileHeaderSegment{" +
